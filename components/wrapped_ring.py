@@ -6,7 +6,7 @@ Created on Fri Jul 01 11:54:57 2016
 """
 
 from gdsCAD import *
-from PMAT_PDK.components import *
+from pmat_pdk.components import *
 import os
 print(os.getcwd())
 

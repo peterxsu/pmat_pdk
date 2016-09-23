@@ -5,11 +5,8 @@ Created on Fri Jul 01 13:06:48 2016
 @author: dkita
 """
 
-import os.path
-
-from PMAT_PDK import PDKtoolkit as tk
-from PMAT_PDK.components import *
-from gdsCAD import *
+from pmat_pdk import *
+import pmat_pdk.toolkit as tk
 
 """ Create a top cell """
 top = tk.Cell('Top')
