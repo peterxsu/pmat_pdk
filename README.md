@@ -82,7 +82,7 @@ Installing software for PMAT-PDK:
 	import sys
 	print sys.path
 	
-* in a python terminal.  Choose the path that contains all of your other python packages.  For me, this was:
+in a python terminal.  Choose the path that contains all of your other python packages.  For me, this was:
 
 	`C:\\Users\\dkita\\Anaconda2\\Lib\\site-packages`
 	
@@ -93,6 +93,7 @@ Installing software for PMAT-PDK:
 * To use the "pmat_pdk" library, simply include the following two lines at the beginning of each mask file:
 
 	`from pmat_pdk import *`
+	
 	`import pmat_pdk.toolkit as tk`
 
 That's it, enjoy! :)
