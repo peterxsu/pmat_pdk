@@ -14,3 +14,4 @@ from gratingcoupler import GratingCoupler
 from waveguide import Waveguide, WaveguideTemplate
 from taper import Taper
 from alignment_marker import AlignmentMarker
+from spiral_waveguide import SpiralWaveguide, SpiralWaveguideCore
