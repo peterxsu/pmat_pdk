@@ -1,5 +1,5 @@
 # PMAT-PDK
-Photonics design kit (PDK) written in Python and used to standardize photonic components, route (and autoroute!) waveguides, all for generation of lithography masks. Library was built ontop of gdsCAD for Python. Written by Derek Kita at MIT for use in the photonic materials research group (PMAT)
+Photonics design kit (PDK) written in Python and used to standardize photonic components, route (and autoroute!) waveguides, all for generation of lithography masks. Library was built ontop of gdsCAD for Python. Written by Derek Kita at MIT for use in the photonic materials research group (PMAT).
 
 Derek Kita, 2016
 
@@ -73,14 +73,26 @@ Installing software for PMAT-PDK:
 
 * And now you should be good to go for visualizing your structures in matplotlib
 
-(8) Once all these work, you are ready to use the library.  For information on the gdsCAD library, please refer to:
+(8) Once all these work, you are ready to use the gdsCAD library.  For information on the gdsCAD library, please refer to:
 
 	http://pythonhosted.org/gdsCAD/#
 
-(9) To use PMAT-PDK, make sure the "PMAT-PDK" folder is in the python path.  Either install it as a library in your distribution of python or add it sys.path.append(path), i.e.:
+(9) To use PMAT-PDK, first download the "pmat_pdk" file, and locate your Python Path.  To do this, type:
 
-	$ sys.path.append('C:\\Users\\dkita\\Dropbox (MIT)\\Research\\gdsCAD\\PMAT-PDK')
+	import sys
+	print sys.path
+	
+* in a python terminal.  Choose the path that contains all of your other python packages.  For me, this was:
 
-at the top of your python files.
+	`C:\\Users\\dkita\\Anaconda2\\Lib\\site-packages`
+	
+* Now you can go ahead and place the "pmat_pdk" file here.  Close and relaunch your IDE to reload the Python Path, and then test to see if the package is installed by running (in a python terminal):
 
-Enjoy! :)
+	`import pmat_pdk`
+	
+* To use the "pmat_pdk" library, simply include the following two lines at the beginning of each mask file:
+
+	`from pmat_pdk import *`
+	`import pmat_pdk.toolkit as tk`
+
+That's it, enjoy! :)
