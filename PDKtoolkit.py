@@ -8,7 +8,7 @@ from gdsCAD import *
 import numpy as np
 import math
 import heapq
-from waveguide import Waveguide, WaveguideTemplate
+from components.waveguide import Waveguide, WaveguideTemplate
     
 class Cell:
     """
