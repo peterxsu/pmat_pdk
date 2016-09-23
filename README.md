@@ -10,7 +10,7 @@ Installing software for PMAT-PDK:
 (1) Install python 2.7 from:
 	https://www.continuum.io/downloads
 	
-	-Make sure numpy and matplotlib are installed by running
+	*Make sure numpy and matplotlib are installed by running
 	
 	$ import numpy
 	or
@@ -19,9 +19,9 @@ Installing software for PMAT-PDK:
 (2) Install the shapely library from:
 	http://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely
 	
-	-If you are using a 64-bit system, make sure you install:
+	*If you are using a 64-bit system, make sure you install:
 		Shapely-1.5.16-cp27-cp27m-win_amd64.whl
-	-Open a command prompt (type "CMD" into the windows search tab) and navigate to the Downloads folder, then enter:
+	*Open a command prompt (type "CMD" into the windows search tab) and navigate to the Downloads folder, then enter:
 	
 	$ pip install Shapely-1.5.16-cp27-cp27m-win_amd64.whl
 
