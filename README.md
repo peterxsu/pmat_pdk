@@ -79,8 +79,8 @@ Installing software for PMAT-PDK:
 
 (9) To use PMAT-PDK, first download the "pmat_pdk" file, and locate your Python Path.  To do this, type:
 
-	`import sys`
-	`print sys.path`
+	import sys
+	print sys.path
 	
 * in a python terminal.  Choose the path that contains all of your other python packages.  For me, this was:
 
