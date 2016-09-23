@@ -79,7 +79,7 @@ Installing software for PMAT-PDK:
 
 (9) To use PMAT-PDK, make sure the "PMAT-PDK" folder is in the python path.  Either install it as a library in your distribution of python or add it sys.path.append(path), i.e.:
 
-	`$ sys.path.append('C:\\Users\\dkita\\Dropbox (MIT)\\Research\\gdsCAD\\PMAT-PDK')`
+	$ sys.path.append('C:\\Users\\dkita\\Dropbox (MIT)\\Research\\gdsCAD\\PMAT-PDK')
 
 at the top of your python files.
 
