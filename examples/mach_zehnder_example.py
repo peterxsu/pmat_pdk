@@ -6,10 +6,9 @@ Created on Tue Jul 05 17:19:22 2016
 """
 
 import os.path
-import sys
-sys.path.append('C:\\Users\\dkita\\Dropbox (MIT)\\Research\\gdsCAD\\PMAT-PDK') # ADD PDK LIBRARY TO PYTHON PATH
-from components import *
-import PDKtoolkit as tk
+
+from PMAT_PDK.components import *
+from PMAT_PDK import PDKtoolkit as tk
 from gdsCAD import *
 
 """ Create a top cell """

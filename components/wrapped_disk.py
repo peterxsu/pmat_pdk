@@ -7,7 +7,7 @@ Created on Fri Jul 01 12:57:36 2016
 
 from gdsCAD import *
 import os
-from components import *
+from PMAT_PDK.components import *
 print(os.getcwd())
 
 """Defines a wrapped disk object.  To use, instantiate the 'cell' property."""
