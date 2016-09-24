@@ -71,30 +71,6 @@ def rotate(component, angle):
         
     return component
     
-#def translate(component, vector):
-#    """ translate component by amount vector [x, y] """
-#    center = component.center
-#    comp_copy = component.cell.copy()
-#    """ Delete old cell contents """
-#    name = component.cell.name
-#    component.cell = core.Cell(name)
-#    
-#    layer_list = comp_copy.get_layers()
-#    layer_list.reverse()  # for aesthetics
-#    
-#    for layer in layer_list:
-#        subcell = core.Cell("temp_subcell"+str(layer))
-#        for elem in comp_copy.elements:
-#            if elem.layer == layer:
-#                subcell.add(elem)
-#        
-#        comp_elems = core.Elements(subcell, layer=layer)
-#        comp_elems.translate((-center[0], -center[1]))
-#        comp_elems.rotate(angle)
-#        comp_elems.translate((center[0], center[1]))
-#        component.cell.add(comp_elems)
-#    
-#    return component
         
 def flipDirection(direction):
     if direction=="NORTH": return "SOUTH"
@@ -232,10 +208,6 @@ def autogrid(layoutBB, cell_bbs, netlist, meshsize):
     for j in xrange(len(ylist)-1):
         row = []
         for i in xrange(len(xlist)-1):
-#            corners = [[xlist[i], ylist[j]], 
-#                       [xlist[i]+meshsize, ylist[j]], 
-#                       [xlist[i], ylist[j]+meshsize], 
-#                       [xlist[i]+meshsize, ylist[j]+meshsize]]
             cornerBB = [[xlist[i], ylist[j]], [xlist[i]+meshsize, ylist[j]+meshsize]]
             
             occupied = 0 #not occupied
@@ -358,7 +330,7 @@ def autoroute(topcell, netlist, wg_t, meshsize=None, check_overlaps=False):
     return getWaypoints(corners, netlist, layout_BB, meshsize)
 
 """
-Below is the A-star routing algorithm
+Below is the modified A-star routing algorithm
 """
         
 class PriorityQueue:
@@ -479,7 +451,6 @@ def fix_path(path):
     for i in xrange(len(path)-1):
         (x1, y1, d1) = path[i]
         (x2, y2, d2) = path[i+1]
-#        newpath.append((path[i][0], path[i][1]))
         if (d1!=d2):
             """ Bend detected, add an extra point """
             if d1=="NORTH" or d1=="SOUTH":
