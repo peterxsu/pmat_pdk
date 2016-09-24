@@ -56,7 +56,7 @@ Installing software for PMAT-PDK:
 
 	$ import descartes
 	$ import shapely
-	$ import dsxfgrabber
+	$ import dxfgrabber
 
 (7) Now, everything should work find, except there's one bug in the core code for gdsCAD, so now we have to do some surgery:
 * Navigate to the core.py file.  For me, this was found in the following path:
