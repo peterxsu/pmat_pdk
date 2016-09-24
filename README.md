@@ -97,3 +97,5 @@ in a python terminal.  Choose the path that contains all of your other python pa
 	`import pmat_pdk.toolkit as tk`
 
 That's it, enjoy! :)
+
+Check out https://github.com/DerekK88/pmat_pdk/wiki/PMAT-PDK-Homepage to see a step-by-step tutorial for making your first lithography mask in Python.
