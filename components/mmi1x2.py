@@ -7,7 +7,6 @@ Created on Tue Jul 05 17:46:53 2016
 from waveguide import WaveguideTemplate
 from gdsCAD import *
 import os
-print(os.getcwd())
 
 """Defines a 1x2 MMI.  To use, instantiate the 'cell' property."""
 
@@ -38,7 +37,6 @@ class MMI1x2:
         
     def build_ports(self):
         """ Portlist format:  [x_position, y_position, wg_exit_angle] """
-        print "Building ports at center: "+str(self.center)
         self.portlist["output_top"] = [self.center[0]+self.length/2.0, self.center[1]+self.offset, "EAST"]
         self.portlist["output_bottom"] = [self.center[0]+self.length/2.0, self.center[1]-self.offset, "EAST"]
         self.portlist["input"] = [self.center[0]-self.length/2.0, self.center[1], "WEST"]
