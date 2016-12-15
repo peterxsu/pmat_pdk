@@ -1,5 +1,5 @@
 # PMAT-PDK
-Photonics design kit (PDK) written in Python and used to standardize photonic components, route (and autoroute!) waveguides, all for generation of lithography masks. Library was built ontop of gdsCAD for Python. Written by Derek Kita at MIT for use in the photonic materials research group (PMAT).
+Photonics tool kit written in Python and used to standardize photonic components, route (and autoroute!) waveguides, all for generation of lithography masks. Library was built ontop of gdsCAD for Python. Written by Derek Kita at MIT for use in the photonic materials research group (PMAT).
 
 First install, then check out the tutorial at: https://github.com/DerekK88/pmat_pdk/wiki/PMAT-PDK-Homepage
 
