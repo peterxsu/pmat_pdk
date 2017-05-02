@@ -9,7 +9,6 @@ from gdsCAD import *
 from waveguide import WaveguideTemplate
 import os
 import math
-print(os.getcwd())
 
 """Defines a spiral waveguide object.  To use, instantiate the 'cell' property."""
 
