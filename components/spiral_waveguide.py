@@ -25,6 +25,8 @@ class SpiralWaveguide:
         self.clad_width = wg_template.clad_width
         self.bend_radius = wg_template.bend_radius
         
+        self.real_length = min_spiral_length
+        
         self.build_cell()
         self.build_ports()
         
@@ -40,7 +42,8 @@ class SpiralWaveguide:
         if 6*br + 2*num_circles*cw > self.max_spiral_width:
             raise ValueError("min_spiral_length too large for max_spiral_width")
         else:
-            print("The real length of the spiral is about: "+str(a*num_circles**2 + b*num_circles + c + self.min_spiral_length))
+            self.real_length = a*num_circles**2 + b*num_circles + c + self.min_spiral_length
+            print("The real length of the spiral is about: "+str(self.real_length))
             center = self.center
             """ cladding """
             spiral_clad = shapes.Rectangle((center[0]-(3*br+cw*num_circles), center[1]-(2*br+cw*num_circles+cw/2)), (center[0]+(3*br+cw*num_circles), center[1]+(2*br+cw*num_circles+cw/2)), layer=2)
@@ -123,6 +126,8 @@ class SpiralWaveguideCore:
         self.clad_width = wg_template.clad_width
         self.bend_radius = wg_template.bend_radius
         
+        self.real_length = min_spiral_length
+        
         self.build_cell()
         self.build_ports()
         
@@ -138,7 +143,8 @@ class SpiralWaveguideCore:
         if 6*br + 2*num_circles*cw > self.max_spiral_width:
             raise ValueError("min_spiral_length too large for max_spiral_width")
         else:
-            print("The real length of the spiral is about: "+str(a*num_circles**2 + b*num_circles + c + self.min_spiral_length))
+            self.real_length = a*num_circles**2 + b*num_circles + c + self.min_spiral_length
+            print("The real length of the spiral is about: "+str(self.real_length))
             center = self.center
             """ cladding """
             spiral_width = 4*br + 2*cw*(num_circles+1)
