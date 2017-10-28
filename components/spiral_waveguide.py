@@ -185,8 +185,157 @@ class SpiralWaveguideCore:
         self.portlist["input"] = [self.center[0]-(2*br+cw*num_circles), self.center[1], "SOUTH"]
         self.portlist["output"] = [self.center[0]+(2*br+cw*num_circles), self.center[1], "NORTH"]
 
+"""Defines a spiral waveguide with straight sections like a paperclip structure.  To use, instantiate the 'cell' property."""
+
+class PaperclipSpiralWaveguide:
+    def __init__(self, name, wg_template, center=(0,0), min_spiral_length=10000.0, max_spiral_width=1000.0, max_spiral_height=1000.0):
+        self.cell = core.Cell(str(name))
+        self.portlist = {}
+        
+        self.center = center
+        
+        self.min_spiral_length = min_spiral_length
+        self.max_spiral_width = max_spiral_width
+        self.max_spiral_height = max_spiral_height
+        self.wg_width = wg_template.wg_width
+        self.clad_width = wg_template.clad_width
+        self.bend_radius = wg_template.bend_radius
+        if max_spiral_width < max_spiral_height:
+            raise ValueError("max_spiral_width smaller than max_spiral_height")
+        elif max_spiral_width - 2*self.bend_radius < max_spiral_height:
+            raise ValueError("max_spiral_width too small to guarantee spiral fits with the given max_spiral_height")
+        
+        self.real_length = min_spiral_length
+        
+        self.build_cell()
+        self.build_ports()
+        
+    def build_cell(self):
+        """ calculate spiral parameters """
+        br = self.bend_radius
+        cw = self.clad_width
+        
+        max_circles = int(math.floor((self.max_spiral_height/2 - 2*br-cw/2)/cw))
+        if max_circles < 0: max_circles = 0
+        
+        a = math.pi*cw
+        b = 4*math.pi*br
+        c = 2*math.pi*br - self.min_spiral_length
+        needed_circles = int(math.ceil((-b + math.sqrt(b**2 - 4*a*c))/(2*a)))
+        if needed_circles < 0: needed_circles = 0
+        
+        if needed_circles <= max_circles:
+            straight_length = 0.0
+            num_circles = needed_circles
+        else:
+            straight_length = -(a*max_circles*max_circles + b*max_circles + c)/(2*max_circles+1)
+            num_circles = max_circles
+            
+        if 6*br + 2*num_circles*cw + straight_length > self.max_spiral_width:
+            raise ValueError("min_spiral_length too large for the given max_spiral_width and max_spiral_height")
+        else:
+            self.real_length = a*num_circles**2 + b*num_circles + c + self.min_spiral_length + straight_length*(2*num_circles+1)
+            print("The real length of the spiral is about: "+str(self.real_length))
+            center = self.center
+            """ cladding """
+            spiral_width = 6*br + 2*cw*(num_circles) + straight_length
+            spiral_height = 4*br + 2*cw*(num_circles+1)
+            spiral_clad = shapes.Rectangle((center[0]-spiral_width/2, center[1]-spiral_height/2), (center[0]+spiral_width/2, center[1]+spiral_height/2), layer=2)
+            input_clad = shapes.Rectangle((center[0]-self.max_spiral_width/2, center[1]-cw/2), (center[0]-spiral_width/2, center[1]+cw/2), layer=2)
+            output_clad = shapes.Rectangle((center[0]+self.max_spiral_width/2, center[1]+cw/2), (center[0]+spiral_width/2, center[1]-cw/2), layer=2)
+            
+            self.cell.add(spiral_clad)
+            self.cell.add(input_clad)
+            self.cell.add(output_clad)
+            
+            """ spiral """
+            wg_width = self.wg_width
+            angle_correction = 0
+            real_spiral_width = br + br*math.sqrt(3)
+            if num_circles == 0:
+                angle_correction = 30
+                arc_left = shapes.Disk((center[0]-br,center[1]), br+wg_width/2, inner_radius=br-wg_width/2, initial_angle=0, final_angle=180-angle_correction, layer=1)
+                arc_right = shapes.Disk((center[0]+br,center[1]), br+wg_width/2, inner_radius=br-wg_width/2, initial_angle=180, final_angle=360-angle_correction, layer=1)
+                
+                self.cell.add(arc_left)
+                self.cell.add(arc_right)
+                
+                real_spiral_width = br + br*math.sqrt(3)
+            else:
+                center_left_top = (center[0]-cw/2-straight_length/2,center[1])
+                center_left_bottom = (center[0]+cw/2-straight_length/2,center[1])
+                center_right_top = (center[0]-cw/2+straight_length/2,center[1])
+                center_right_bottom = (center[0]+cw/2+straight_length/2,center[1])
+                for i in range(num_circles,0,-1):
+                    arc_radius = 2*br + (2*i-1)*cw/2
+                    arc_outer_radius = arc_radius + wg_width/2
+                    arc_inner_radius = arc_radius - wg_width/2
+                    if i == num_circles:
+                        angle_correction = math.asin(br/(br+arc_radius))*180/math.pi
+                        arc_left_top = shapes.Disk(center_left_top, arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=90, final_angle=180-angle_correction, layer=1)
+                        straight_top = shapes.Rectangle((center_left_top[0],center_left_top[1]+arc_inner_radius), (center_right_top[0],center_right_top[1]+arc_outer_radius), layer=1)
+                        arc_right_top = shapes.Disk(center_right_top, arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=0, final_angle=90, layer=1)
+                        arc_right_bottom = shapes.Disk(center_right_bottom, arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=270, final_angle=360-angle_correction, layer=1)
+                        straight_bottom = shapes.Rectangle((center_left_bottom[0],center_left_bottom[1]-arc_inner_radius), (center_right_bottom[0],center_right_bottom[1]-arc_outer_radius), layer=1)
+                        arc_left_bottom = shapes.Disk(center_left_bottom, arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=180, final_angle=270, layer=1)
+                        
+                        self.cell.add(arc_left_top)
+                        self.cell.add(straight_top)
+                        self.cell.add(arc_right_top)
+                        self.cell.add(arc_left_bottom)
+                        self.cell.add(straight_bottom)
+                        self.cell.add(arc_right_bottom)
+                    else:
+                        arc_left_top = shapes.Disk(center_left_top, arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=90, final_angle=180, layer=1)
+                        straight_top = shapes.Rectangle((center_left_top[0],center_left_top[1]+arc_inner_radius), (center_right_top[0],center_right_top[1]+arc_outer_radius), layer=1)
+                        arc_right_top = shapes.Disk(center_right_top, arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=0, final_angle=90, layer=1)
+                        arc_right_bottom = shapes.Disk(center_right_bottom, arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=270, final_angle=360, layer=1)
+                        straight_bottom = shapes.Rectangle((center_left_bottom[0],center_left_bottom[1]-arc_inner_radius), (center_right_bottom[0],center_right_bottom[1]-arc_outer_radius), layer=1)
+                        arc_left_bottom = shapes.Disk(center_left_bottom, arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=180, final_angle=270, layer=1)
+                        
+                        self.cell.add(arc_left_top)
+                        self.cell.add(straight_top)
+                        self.cell.add(arc_right_top)
+                        self.cell.add(arc_left_bottom)
+                        self.cell.add(straight_bottom)
+                        self.cell.add(arc_right_bottom)
+                
+                arc_outer_radius = br + wg_width/2
+                arc_inner_radius = br - wg_width/2
+                arc_left_top = shapes.Disk((center[0]-br-straight_length/2,center[1]), arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=90, final_angle=180, layer=1)
+                straight_top = shapes.Rectangle((center[0]-br-straight_length/2,center[1]+arc_inner_radius), (center[0]-br,center[1]+arc_outer_radius), layer=1)
+                arc_right_top = shapes.Disk((center[0]-br,center[1]), arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=0, final_angle=90, layer=1)
+                arc_right_bottom = shapes.Disk((center[0]+br+straight_length/2,center[1]), arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=270, final_angle=360, layer=1)
+                straight_bottom = shapes.Rectangle((center[0]+br+straight_length/2,center[1]-arc_inner_radius), (center[0]+br,center[1]-arc_outer_radius), layer=1)
+                arc_left_bottom = shapes.Disk((center[0]+br,center[1]), arc_outer_radius, inner_radius=arc_inner_radius, initial_angle=180, final_angle=270, layer=1)
+                
+                self.cell.add(arc_left_top)
+                self.cell.add(straight_top)
+                self.cell.add(arc_right_top)
+                self.cell.add(arc_left_bottom)
+                self.cell.add(straight_bottom)
+                self.cell.add(arc_right_bottom)
+                
+                real_spiral_width = math.sqrt((3*br+cw*num_circles-cw/2)**2 - br**2) + cw/2 + straight_length/2
+            
+            """ input and output waveguides """
+            input_wg = shapes.Rectangle((center[0]-self.max_spiral_width/2, center[1]-wg_width/2), (center[0]-real_spiral_width, center[1]+wg_width/2), layer=1)
+            output_wg = shapes.Rectangle((center[0]+self.max_spiral_width/2, center[1]+wg_width/2), (center[0]+real_spiral_width, center[1]-wg_width/2), layer=1)
+            input_connecting_arc = shapes.Disk((center[0]-real_spiral_width,center[1]+br), br+wg_width/2, inner_radius=br-wg_width/2, initial_angle=270, final_angle=360-angle_correction, layer=1)
+            output_connecting_arc = shapes.Disk((center[0]+real_spiral_width,center[1]-br), br+wg_width/2, inner_radius=br-wg_width/2, initial_angle=90, final_angle=180-angle_correction, layer=1)
+            
+            self.cell.add(input_wg)
+            self.cell.add(input_connecting_arc)
+            self.cell.add(output_connecting_arc)
+            self.cell.add(output_wg)
+        
+    def build_ports(self):
+        """ Portlist format:  [x_position, y_position, wg_exit_angle] """
+        self.portlist["input"] = [self.center[0]-self.max_spiral_width/2, self.center[1], "WEST"]
+        self.portlist["output"] = [self.center[0]+self.max_spiral_width/2, self.center[1], "EAST"]
+
 if __name__ == "__main__":
     wgt = WaveguideTemplate(bend_radius=100.0, wg_width=2.0, clad_width=20.0)
-    swg = SpiralWaveguideCore("gc", wgt, min_spiral_length=1000.0, max_spiral_width=1000.0)
+    swg = PaperclipSpiralWaveguide("gc", wgt, min_spiral_length=10000.0, max_spiral_width=4000.0, max_spiral_height=500.0)
     swg.cell.show()
     print swg.portlist
